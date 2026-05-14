@@ -1,10 +1,10 @@
 :root {
-    --move-x: 100px;
+    --move-x: -300px;
     --move-y: 100px;
 }
 
 /* =========================
-   Page movement wrapper
+   Page Layout
 ========================= */
 
 .page-wrapper {
@@ -12,7 +12,9 @@
 
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+
+    gap: 200px;
 
     min-height: 100vh;
 }
@@ -25,13 +27,9 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: #fff;
 
-    text-shadow:
-        3px 3px 0 #333,
-        6px 6px 12px rgba(0, 0, 0, 0.8);
-
     margin: 0;
-
-    background-color: #000000;
+    background: #000;
+    background-image: url('IMG_5384.JPG');
     background-size: cover;
     background-position: center;
 
@@ -44,12 +42,12 @@ body {
 
 .carousel {
     position: relative;
-
     width: min(600px, 90vw);
+    height: 220px;
 }
 
 /* =========================
-   Boxes
+   Boxes (carousel only)
 ========================= */
 
 .box {
@@ -60,7 +58,6 @@ body {
     text-align: center;
 
     width: 100%;
-
     min-height: 120px;
 
     background: rgba(255, 255, 255, 0.1);
@@ -81,51 +78,49 @@ body {
         opacity 0.6s ease;
 }
 
-/* Active */
 .box.active {
     transform: translateY(0) scale(1);
     opacity: 1;
     z-index: 2;
 }
 
-/* Behind */
 .box.behind {
     transform: translateY(20px) scale(0.95);
     opacity: 0.5;
     z-index: 1;
 }
 
-/* Slide out */
 .box.slide-out {
     transform: translateY(-120%) scale(0.95);
     opacity: 0;
-    z-index: 1;
 }
 
-/* Hover */
-.box:hover {
-    border: 2px solid rgba(255, 255, 255, 1);
-    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+/* =========================
+   Social Section (independent)
+========================= */
+
+:root {
+    --social-x: 0px;
+    --social-y: -100px;
 }
 
-/* Scrollbar */
-.box::-webkit-scrollbar {
-    width: 6px;
-}
+.social-links {
+    width: min(600px, 90vw);
 
-.box::-webkit-scrollbar-track {
-    background: transparent;
-}
+    padding: 32px 40px;
 
-.box::-webkit-scrollbar-thumb {
-    background: #fff;
-    border-radius: 12px;
-}
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
 
-/* YouTube hidden */
-#yt-player {
-    position: absolute;
-    left: -9999px;
-    width: 0;
-    height: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* movement control */
+    transform: translate(var(--social-x), var(--social-y));
 }
