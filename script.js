@@ -1,4 +1,4 @@
-const boxes = document.querySelectorAll('.box');
+const boxes = document.querySelectorAll('.carousel .box');
 
 let current = 0;
 let isAnimating = false;
@@ -15,9 +15,11 @@ function updateCarousel() {
 
         if (index === current) {
             box.classList.add('active');
-        } else if (index === (current + 1) % boxes.length) {
+        } 
+        else if (index === (current + 1) % boxes.length) {
             box.classList.add('behind');
-        } else {
+        } 
+        else {
             box.classList.add('slide-out');
         }
     });
@@ -29,32 +31,30 @@ function nextBox() {
 
     isAnimating = true;
 
-    const oldCurrent = current;
     current = (current + 1) % boxes.length;
 
-    boxes[oldCurrent].classList.remove('active');
-    boxes[oldCurrent].classList.add('slide-out');
-
-    boxes[current].classList.remove('behind');
-    boxes[current].classList.add('active');
+    updateCarousel();
 
     setTimeout(() => {
-        updateCarousel();
         isAnimating = false;
     }, 600);
 }
 
+function handleAdvance() {
+    nextBox();
+    startMusic();
+}
+
+/* click */
 boxes.forEach(box => {
-    box.addEventListener('click', () => {
-        nextBox();
-        startMusic();
-    });
+    box.addEventListener('click', handleAdvance);
 });
 
+/* keyboard */
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === ' ') {
-        nextBox();
-        startMusic();
+        e.preventDefault();
+        handleAdvance();
     }
 });
 
@@ -68,6 +68,7 @@ const youtubeId = "5WW3rOS0e-c";
 
 let player;
 let started = false;
+let pendingStart = false;
 
 function onYouTubeIframeAPIReady() {
 
@@ -75,7 +76,6 @@ function onYouTubeIframeAPIReady() {
 
         height: '0',
         width: '0',
-
         videoId: youtubeId,
 
         playerVars: {
@@ -88,18 +88,29 @@ function onYouTubeIframeAPIReady() {
             onReady: (e) => {
                 e.target.mute();
                 e.target.setVolume(0);
+
+                if (pendingStart) {
+                    playAndFade();
+                }
             }
         }
     });
 }
 
-/* fade in on first interaction */
 function startMusic() {
 
     if (started) return;
     started = true;
 
-    if (!player) return;
+    if (!player) {
+        pendingStart = true;
+        return;
+    }
+
+    playAndFade();
+}
+
+function playAndFade() {
 
     player.playVideo();
     player.unMute();
