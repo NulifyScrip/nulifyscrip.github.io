@@ -1,126 +1,126 @@
 :root {
-    --move-x: -300px;
+    --move-x: 100px;
     --move-y: 100px;
+    --box-width: min(600px, 90vw);
+    --glass: rgba(255, 255, 255, 0.1);
+    --border: 2px solid rgba(255, 255, 255, 0.4);
+    --padding: 32px 40px;
 }
-
-/* =========================
-   Page Layout
-========================= */
-
-.page-wrapper {
-    transform: translate(var(--move-x), var(--move-y));
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    gap: 200px;
-
-    min-height: 100vh;
-}
-
-/* =========================
-   Body
-========================= */
 
 body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: #fff;
-
     margin: 0;
-    background: #000;
-    background-image: url('Titanfall.PNG');
-    background-size: cover;
-    background-position: center;
-
+    background: #000 url('Titanfall.PNG') center / cover no-repeat;
     overflow: hidden;
 }
 
-/* =========================
-   Carousel
-========================= */
+.page-wrapper {
+    transform: translate(var(--move-x), var(--move-y));
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+/* Shared glass style */
+.carousel .box,
+.social-links {
+    width: var(--box-width);
+    padding: var(--padding);
+    border: var(--border);
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-sizing: border-box;
+}
+
+.carousel-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
 
 .carousel {
     position: relative;
-    width: min(600px, 90vw);
-    height: 220px;
+    width: var(--box-width);
+    height: 300px;
 }
 
-/* =========================
-   Boxes (carousel only)
-========================= */
-
 .box {
-    border: 2px solid rgba(255, 255, 255, 0.4);
-
-    padding: 32px 40px;
-
     text-align: center;
-
-    width: 100%;
     min-height: 120px;
-
-    background: rgba(255, 255, 255, 0.1);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
     position: absolute;
     top: 0;
     left: 0;
-
-    box-sizing: border-box;
-
     cursor: pointer;
-
     transition:
         transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
         opacity 0.6s ease;
 }
 
-.box.active {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-    z-index: 2;
-}
-
-.box.behind {
-    transform: translateY(20px) scale(0.95);
-    opacity: 0.5;
-    z-index: 1;
-}
-
-.box.slide-out {
-    transform: translateY(-120%) scale(0.95);
-    opacity: 0;
-}
-
-/* =========================
-   Social Section (independent)
-========================= */
-
-:root {
-    --social-x: 0px;
-    --social-y: -100px;
-}
+.box.active   { transform: translateY(0) scale(1);       opacity: 1;   z-index: 2; }
+.box.behind   { transform: translateY(20px) scale(0.95);  opacity: 0.5; z-index: 1; }
+.box.slide-out { transform: translateY(-120%) scale(0.95); opacity: 0;   z-index: 0; }
 
 .social-links {
-    width: min(600px, 90vw);
-
-    padding: 32px 40px;
-
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.1);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    box-sizing: border-box;
-
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
 
-    /* movement control */
-    transform: translate(var(--social-x), var(--social-y));
+.project-preview {
+    width: min(400px, 90vw);
+    height: 300px;
+    padding: 20px;
+    border: var(--border);
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+.project-preview.visible {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.preview-placeholder {
+    width: 100%;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+}
+
+.preview-label {
+    color: #fff;
+    font-size: 14px;
+    margin: 0;
+}
+.social-links a {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.social-links a:hover {
+    text-decoration: underline;
 }
