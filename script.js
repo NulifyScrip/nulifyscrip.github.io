@@ -1,10 +1,50 @@
 /* =========================
+   Custom Cursor
+========================= */
+const dot = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+
+document.addEventListener('mousemove', (e) => {
+    dot.style.left = e.clientX + 'px';
+    dot.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+});
+
+document.querySelectorAll('a, .box, .indicator, .music-toggle').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+});
+
+/* =========================
+   Parallax
+========================= */
+document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 20;
+    const y = (e.clientY / window.innerHeight - 0.5) * 20;
+    document.body.style.backgroundPosition = `calc(50% + ${x}px) calc(50% + ${y}px)`;
+});
+
+/* =========================
    Carousel
 ========================= */
 const boxes = document.querySelectorAll('.carousel .box');
-const preview = document.getElementById('project-preview');
+const indicators = document.querySelectorAll('.indicator');
+const counter = document.getElementById('counter');
+const counterNumber = document.getElementById('counter-number');
 let current = 0;
 let isAnimating = false;
+const projectCount = 1;
+
+function countUp(target) {
+    let count = 0;
+    const step = Math.ceil(target / 20);
+    const interval = setInterval(() => {
+        count += step;
+        if (count >= target) { count = target; clearInterval(interval); }
+        counterNumber.textContent = count;
+    }, 50);
+}
 
 function updateCarousel() {
     boxes.forEach((box, i) => {
@@ -13,7 +53,14 @@ function updateCarousel() {
             i === (current + 1) % boxes.length ? 'behind' : 'slide-out'
         );
     });
-    current === 2 ? preview.classList.add('visible') : preview.classList.remove('visible');
+    indicators.forEach((dot, i) => dot.classList.toggle('active', i === current));
+    if (current === 2) {
+        counter.classList.add('visible');
+        countUp(projectCount);
+    } else {
+        counter.classList.remove('visible');
+        counterNumber.textContent = 0;
+    }
 }
 
 function nextBox() {
@@ -24,21 +71,57 @@ function nextBox() {
     setTimeout(() => isAnimating = false, 600);
 }
 
-function handleAdvance() {
+function handleAdvance(e) {
+    e.stopPropagation();
     nextBox();
     startMusic();
 }
 
 boxes.forEach(box => box.addEventListener('click', handleAdvance));
 
+indicators.forEach(dot => {
+    dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(dot.dataset.index);
+        if (index === current || isAnimating) return;
+        isAnimating = true;
+        current = index;
+        updateCarousel();
+        setTimeout(() => isAnimating = false, 600);
+    });
+});
+
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === ' ') {
         e.preventDefault();
-        handleAdvance();
+        nextBox();
+        startMusic();
     }
 });
 
 updateCarousel();
+
+/* =========================
+   Music Toggle
+========================= */
+const musicToggle = document.getElementById('music-toggle');
+const iconMute = document.getElementById('icon-mute');
+const iconUnmute = document.getElementById('icon-unmute');
+let isMuted = false;
+
+musicToggle.addEventListener('click', () => {
+    if (!player) return;
+    isMuted = !isMuted;
+    if (isMuted) {
+        player.mute();
+        iconMute.style.display = 'none';
+        iconUnmute.style.display = 'block';
+    } else {
+        player.unMute();
+        iconMute.style.display = 'block';
+        iconUnmute.style.display = 'none';
+    }
+});
 
 /* =========================
    YouTube Music
